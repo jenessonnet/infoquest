@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de Informática</title>
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          background-image: url('https://files.passeidireto.com/6cf04652-c70b-4c5c-acfa-13eddd6515e8/bg2.png');
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-attachment: fixed;
+          margin: 0;
+          padding: 20px;
+          color: #333;
+      }
+      #quiz-container {
+          max-width: 600px;
+          margin: auto;
+          background-color: rgba(255, 255, 255, 0.9);
+          border-radius: 10px;
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      }
+      h1 {
+          text-align: center;
+          color: #007bff;
+      }
+      .question {
+          margin: 20px 0;
+      }
+      .options {
+          list-style-type: none;
+          padding: 0;
+      }
+      .options li {
+          margin: 10px 0;
+      }
+      button {
+          display: block;
+          margin: 20px auto;
+          padding: 10px 20px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+      }
+      button:hover {
+          background-color: #0056b3;
+      }
+      #result {
+          text-align: center;
+          margin-top: 20px;
+      }
+      .logo {
+          display: block;
+          margin: 20px auto 0;
+          max-width: 150px;
+      }
+  </style>
+</head>
+<body>
+  <audio id="background-music" loop>
+      <source src="link_da_musica_do_show_do_milhao.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="error-sound">
+      <source src="link_da_voz_do_silvio_santos.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="quiz-container">
+      <h1>Quiz de Informática</h1>
+      <div id="quiz"></div>
+      <button id="next-button">Próxima Pergunta</button>
+      <div id="result"></div>
+  </div>
+
+  <script>
+      const questions = [
+          {
+              question: "1ª Os sistemas operacionais Windows 10 e 11 BR (x64) e as atuais distribuições Linux suportam uma modalidade de processamento que permite a execução de diversas aplicações de forma concorrente. Essa modalidade de processamento caracteriza um tipo de multitarefa conhecida como:",
+              options: ["A) preemptiva", "B) associativa", "C) distributiva", "D) cooperativa"],
+              answer: "A) preemptiva"
+          },
+          {
+              question: "2ª Um componente de hardware de um computador é um circuito integrado que realiza as funções de cálculo e tomada de decisão. Esse componente é conhecido por:",
+              options: ["A) cache", "B) buffer", "C) registrador", "D) microprocessador"],
+              answer: "D) microprocessador"
+          },
+          {
+              question: "3ª Um dos componentes de hardware de uma CPU é:",
+              options: ["A) a Unidade Lógica e Aritmética", "B) o Gabinete e sua fonte de alimentação", "C) o Basic Input-Output Subsystem (BIOS)", "D) o Peripheral Component Interconnect (PCI)"],
+              answer: "A) a Unidade Lógica e Aritmética"
+          },
+          {
+              question: "4ª A parte responsável por buscar instruções na memória principal é:",
+              options: ["A) a unidade de controle", "B) o contador de programa", "C) o registrador de instrução", "D) a unidade lógica e aritmética"],
+              answer: "A) a unidade de controle"
+          },
+          {
+              question: "5ª As modalidades de processamento conhecidas, respectivamente, como:",
+              options: ["A) batch e offline", "B) batch e online", "C) real time e offline", "D) real time e online"],
+              answer: "B) batch e online"
+          },
+          // Adicione mais perguntas conforme necessário
+      ];
+
+      let currentQuestionIndex = 0;
+      let correctAnswers = 0;
+      let incorrectAnswers = 0;
+
+      // Inicia a música de fundo
+      document.getElementById('background-music').play();
+
+      function loadQuestion() {
+          const questionContainer = document.getElementById('quiz');
+          questionContainer.innerHTML = `
+              <div class="question">${questions[currentQuestionIndex].question}</div>
+              <ul class="options">
+                  ${questions[currentQuestionIndex].options.map(option => `<li><input type="radio" name="option" value="${option}"> ${option}</li>`).join('')}
+              </ul>
+              <img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/137618553/UOzw3SRAqth4L2FY.png?Expires=1749420661&Signature=nKlhvsi96vjyIsSahFtLjvZgHb6sYonmEqA6RIim4irvSxqrAk9cW0OPkStrRKHWJZfYhImUgTmjL2EmMYRvH7w~uOUTqqBO5XVTnv0c-ZD2dSjEeKDE8RRvsT2znxfbrkJtceXyCn9xGWH-uA7qwFsyF4Z7FVDMR4ibVwOwJtyrOjkieWUeU1h-VI6m2p3o0iugTbMV~kMXOaX2W~KhEG0hPJLQ10BpMTW01DnPPXwy2oXAIXxgYDOZJ3qfTIYLqmceNBtOBJ3HcjHU8dQrPdFjUFKNbcOsFSEKEI8-IRKhwzJsrwecuc2KL8QMNSO0n7g3M2JFg-ujHiHEbaUeBA__&Key-Pair-Id=K3USGZIKWMDCSX" alt="Logo" class="logo">
+          `;
+      }
+
+      document.getElementById('next-button').addEventListener('click', () => {
+          const selectedOption = document.querySelector('input[name="option"]:checked');
+          if (selectedOption) {
+              const answer = selectedOption.value;
+              if (answer === questions[currentQuestionIndex].answer) {
+                  correctAnswers++;
+                  alert('Correto!');
+              } else {
+                  incorrectAnswers++;
+                  document.getElementById('error-sound').play(); // Toca o som de erro
+                  alert('Incorreto! A resposta correta é: ' + questions[currentQuestionIndex].answer);
+              }
+              currentQuestionIndex++;
+              if (currentQuestionIndex < questions.length) {
+                  loadQuestion();
+              } else {
+                  showResults();
+              }
+          } else {
+              alert('Por favor, selecione uma opção.');
+          }
+      });
+
+      function showResults() {
+          const totalQuestions = questions.length;
+          const percentageCorrect = (correctAnswers / totalQuestions) * 100;
+          const percentageIncorrect = (incorrectAnswers / totalQuestions) * 100;
+
+          const resultContainer = document.getElementById('quiz-container');
+          resultContainer.innerHTML = `
+              <h2>Quiz Concluído!</h2>
+              <p>Acertos: ${correctAnswers} (${percentageCorrect.toFixed(2)}%)</p>
+              <p>Erros: ${incorrectAnswers} (${percentageIncorrect.toFixed(2)}%)</p>
+              <p>${getImprovementSuggestion()}</p>
+              <img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/137618553/UOzw3SRAqth4L2FY.png?Expires=1749420661&Signature=nKlhvsi96vjyIsSahFtLjvZgHb6sYonmEqA6RIim4irvSxqrAk9cW0OPkStrRKHWJZfYhImUgTmjL2EmMYRvH7w~uOUTqqBO5XVTnv0c-ZD2dSjEeKDE8RRvsT2znxfbrkJtceXyCn9xGWH-uA7qwFsyF4Z7FVDMR4ibVwOwJtyrOjkieWUeU1h-VI6m2p3o0iugTbMV~kMXOaX2W~KhEG0hPJLQ10BpMTW01DnPPXwy2oXAIXxgYDOZJ3qfTIYLqmceNBtOBJ3HcjHU8dQrPdFjUFKNbcOsFSEKEI8-IRKhwzJsrwecuc2KL8QMNSO0n7g3M2JFg-ujHiHEbaUeBA__&Key-Pair-Id=K3USGZIKWMDCSX" alt="Logo" class="logo">
+          `;
+      }
+
+      function getImprovementSuggestion() {
+          const improvementTopic = "Informática Geral"; // Aqui você pode personalizar a sugestão
+          return `Você precisa melhorar em: ${improvementTopic}`;
+      }
+
+      loadQuestion();
+  </script>
+</body>
+</html>
