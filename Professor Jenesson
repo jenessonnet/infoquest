@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infoquest - O Desafio da Informática</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-image: url('https://files.passeidireto.com/6cf04652-c70b-4c5c-acfa-13eddd6515e8/bg2.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+    }
+    #quiz-container {
+        max-width: 800px; /* Increased max-width for more content */
+        margin: auto;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    h1 {
+        text-align: center;
+        color: #007bff;
+    }
+    .question {
+        margin: 20px 0;
+        font-weight: bold;
+    }
+    .options {
+        list-style-type: none;
+        padding: 0;
+    }
+    .options li {
+        margin: 10px 0;
+    }
+    button {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    #result {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .logo {
+        display: block;
+        margin: 20px auto 0;
+        max-width: 150px;
+    }
+    .gabarito-item {
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+    .gabarito-item:last-child {
+        border-bottom: none;
+    }
+    .gabarito-item strong {
+        color: #007bff;
+    }
+    .gabarito-item span {
+        display: block;
+        margin-top: 5px;
+        font-style: italic;
+    }
+</style>
+</head>
+<body>
+<audio id="background-music" loop>
+    <source src="link_da_musica_do_show_do_milhao.mp3" type="audio/mpeg">
+</audio>
+<audio id="error-sound">
+    <source src="link_da_voz_do_silvio_santos.mp3" type="audio/mpeg">
+</audio>
+
+<div id="quiz-container">
+    <h1>Infoquest - O Desafio da Informática</h1>
+    <div id="quiz"></div>
+    <button id="next-button">Próxima Pergunta</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "1ª Editores de apresentação são amplamente utilizados para criar desde apresentações acadêmicas até comerciais. Assinale a alternativa que apresenta qual o editor de apresentação que é associado ao sistema operacional macOS e é conhecido por seus temas visualmente atraentes.",
+            options: ["A) Google Slides", "B) PowerPoint", "C) KeyNote", "D) Prezi", "E) LibreOffice"],
+            answer: "C) KeyNote",
+            explanation: "KeyNote é o editor de apresentação da Apple, nativo do macOS, conhecido por seus temas e design visualmente atraentes. [cite: 159, 160]"
+        },
+        {
+            question: "2ª Existem Sistemas Operacionais (S.O.) de 32 bits, e também de 64 bits. Assinale a alternativa que explica corretamente um S.O. de 64 bits.",
+            options: ["A) Um S.O. que suporta apenas 64 programas simultâneos", "B) Um S.O. que requer no mínimo 64 GB de RAM", "C) Um S.O. otimizado para processadores de 64 núcleos", "D) Um S.O. que utiliza instruções de 64 bits para processamento de dados"],
+            answer: "D) Um S.O. que utiliza instruções de 64 bits para processamento de dados",
+            explanation: "Um sistema operacional de 64 bits utiliza instruções de 64 bits para o processamento de dados, o que permite lidar com maiores quantidades de memória RAM e processar informações de forma mais eficiente. [cite: 161, 162, 163, 164]"
+        },
+        {
+            question: "3ª É utilizado um símbolo especial para separar os nomes dos diretórios em um caminho no Windows. Assinale a alternativa correta.",
+            options: ["A) / (barra normal)", "B) : (dois pontos)", "C) \\ (barra invertida)", "D) . (ponto)"],
+            answer: "C) \\ (barra invertida)",
+            explanation: "No Windows, a barra invertida (\\) é o símbolo utilizado para separar os nomes dos diretórios em um caminho. [cite: 164, 165]"
+        },
+        {
+            question: "4ª Quanto aos principais aplicativos e acessórios do Windows 10 (em português), analise as afirmativas abaixo. (1) Paint é um editor de imagens básico para criar e editar imagens simples. (2) Cortana é um Assistente Virtual para realizar tarefas por comandos de voz. Assinale a alternativa correta.",
+            options: ["A) As duas afirmativas são verdadeiras", "B) A afirmativa (1) é verdadeira, e a (2) é falsa", "C) A afirmativa (2) é verdadeira, e a (1) é falsa", "D) As duas afirmativas são falsas"],
+            answer: "A) As duas afirmativas são verdadeiras",
+            explanation: "Tanto o Paint (editor de imagens básico) quanto a Cortana (assistente virtual por voz) são aplicativos e acessórios do Windows 10. [cite: 166, 167, 168]"
+        },
+        {
+            question: "5ª Dentro dos vários aplicativos do Windows 10 (em português) existe um que é utilizado para enviar e receber e-mails. Assinale a alternativa correta que apresenta o nome desse aplicativo.",
+            options: ["A) OneDrive", "B) Email", "C) Notepad", "D) Cortana"],
+            answer: "B) Email",
+            explanation: "O aplicativo nativo do Windows 10 para enviar e receber e-mails é o Email. [cite: 169, 170]"
+        },
+        {
+            question: "6ª Assinale a alternativa que apresenta qual dos seguintes sistemas operacionais é de código aberto:",
+            options: ["A) Windows Server", "B) macOS", "C) iOS", "D) Windows 10", "E) Linux"],
+            answer: "E) Linux",
+            explanation: "Linux é um sistema operacional de código aberto, o que significa que seu código-fonte é publicamente disponível e pode ser modificado. [cite: 171, 172]"
+        },
+        {
+            question: "7ª Assinale a alternativa que apresenta o procedimento correto para instalação de um sistema operacional em um computador:",
+            options: ["A) conectar o computador à internet", "B) atualizar os drivers de hardware", "C) inserir o CD/DVD ou pen drive de instalação e seguir as instruções", "D) desfragmentar o disco rígido", "E) fazer download na loja de aplicativos"],
+            answer: "C) inserir o CD/DVD ou pen drive de instalação e seguir as instruções",
+            explanation: "O procedimento correto para instalar um sistema operacional geralmente envolve a inserção de uma mídia de instalação (CD/DVD ou pen drive) e seguir as instruções na tela. [cite: 172]"
+        },
+        {
+            question: "8ª Windows é um sistema operacional para computadores desenvolvido pela Microsoft. Existem várias funções principais do sistema operacional Windows. Assinale a alternativa incorreta.",
+            options: ["A) Ser responsável por organizar e gerenciar todos os arquivos do computador", "B) Oferecer uma interface gráfica amigável, com ícones, janelas, menus e barras de tarefas", "C) O único propósito do Windows é gerenciar os softwares que operam no computador", "D) Incluir recursos de segurança para proteger o computador contra malwares e vírus", "E) O Windows é responsável por gerenciar os componentes de hardware do computador"],
+            answer: "C) O único propósito do Windows é gerenciar os softwares que operam no computador",
+            explanation: "Além de gerenciar softwares, o Windows também organiza arquivos, oferece interface gráfica, gerencia hardware e inclui recursos de segurança. Portanto, afirmar que seu *único* propósito é gerenciar softwares está incorreto. [cite: 173, 174]"
+        },
+        {
+            question: "9ª Analise as seguintes afirmativas em relação a operações sobre arquivos e diretórios no Windows: (1) O Windows permite a criação de pastas dentro de outras pastas, criando uma estrutura de diretórios. (2) No Windows, é possível selecionar múltiplos arquivos ou diretórios utilizando a tecla Shift ou Ctrl. (3) Para abrir um arquivo ou diretório no Windows, você pode clicar duas vezes com o botão direito do mouse sobre ele. (4) A Lixeira é o local onde os arquivos excluídos são armazenados temporariamente antes de serem permanentemente removidos. Da relação apresentada:",
+            options: ["A) somente as afirmativas 1, 2 e 3 são verdadeiras", "B) somente as afirmativas 1, 2 e 4 são verdadeiras", "C) somente as afirmativas 2, 3 e 4 são verdadeiras", "D) somente as afirmativas 1, 3 e 4 são verdadeiras"],
+            answer: "B) somente as afirmativas 1, 2 e 4 são verdadeiras",
+            explanation: "Afirmativas (1), (2) e (4) estão corretas. Para abrir um arquivo ou diretório no Windows, você clica duas vezes com o botão *esquerdo* do mouse, não o direito. [cite: 174, 175, 176, 177, 178]"
+        },
+        {
+            question: "10° Quanto aos conceitos de organização de pastas e arquivos, analise as afirmativas abaixo e assinale a alternativa correta: I. É possível renomear pastas e arquivos no Windows. II. Impossível criar atalhos de arquivos na área de trabalho. III. Pastas podem conter outras pastas e arquivos. Das afirmativas:",
+            options: ["A) Apenas I e II são tecnicamente verdadeiras", "B) Apenas II e III são tecnicamente verdadeiras", "C) Apenas I e III são tecnicamente verdadeiras", "D) I, II e III são tecnicamente verdadeiras"],
+            answer: "C) Apenas I e III são tecnicamente verdadeiras",
+            explanation: "É possível renomear pastas e arquivos (I) e pastas podem conter outras pastas e arquivos (III). É perfeitamente possível criar atalhos de arquivos na área de trabalho no Windows (II é falsa). [cite: 178, 179]"
+        },
+        {
+            question: "11º Quanto aos conceitos básicos do Sistema Operacional Windows, analise as afirmativas abaixo e dê valores Verdadeiro (V) ou Falso (F). () O Windows não permite a criação de várias contas de usuário no mesmo computador. () O Windows por ser um sistema operacional de código aberto, permite a instalação de programas de terceiros. () O Windows possui uma ferramenta de diagnóstico que ajuda a identificar problemas no sistema. Assinale a alternativa que apresenta a sequência correta de cima para baixo.",
+            options: ["A) V-F-F", "B) V-V-F", "C) F-V-V", "D) F-F-V"],
+            answer: "D) F-F-V",
+            explanation: "O Windows permite a criação de várias contas de usuário (Falso). O Windows não é de código aberto (Falso). O Windows possui ferramentas de diagnóstico (Verdadeiro). [cite: 180, 181, 182, 183, 184]"
+        },
+        {
+            question: "12° O PowerPoint oferece vários modos de exibição, cada um projetado para atender a diferentes necessidades durante o processo de criação e apresentação de slides. Assinale a alternativa que apresenta o nome do modo de exibição do PowerPoint que permite visualizar os slides em miniatura e reorganizá-los facilmente.",
+            options: ["A) Modo de exibição Classificação de slides", "B) Modo de exibição Estrutura de Tópicos", "C) Modo de exibição Miniaturas de slides", "D) Modo de exibição de Apresentação de slides"],
+            answer: "A) Modo de exibição Classificação de slides",
+            explanation: "O Modo de exibição Classificação de slides no PowerPoint permite visualizar e organizar os slides em miniatura. [cite: 185, 186]"
+        },
+        {
+            question: "13º O aplicativo Microsoft PowerPoint, é largamente utilizado para criar apresentações, desta forma é importante o usuário ter conhecimento também sobre as extensões dos arquivos que são gerados, isto irá garantir quais outros softwares semelhantes possam também executar este arquivo. Assinale a alternativa que apresenta qual a extensão de um arquivo gerado através do Microsoft PowerPoint.",
+            options: ["A) .mpp", "B) .pres", "C) .ppt", "D) .ppp", "E) .ppm"],
+            answer: "C) .ppt",
+            explanation: "A extensão padrão para arquivos gerados pelo Microsoft PowerPoint (versões mais antigas) é .ppt. As versões mais recentes usam .pptx. [cite: 187, 188]"
+        },
+        {
+            question: "14° Leia a frase abaixo referente ao editor de apresentações do Microsoft Office: 'O recurso do PowerPoint que permite adicionar animações a elementos da apresentação é denominado _______.' Assinale a alternativa que preenche corretamente a lacuna.",
+            options: ["A) SmartArt", "B) Exibição", "C) Ilustrações", "D) Transições"],
+            answer: "D) Transições",
+            explanation: "O recurso que permite adicionar animações entre slides em uma apresentação do PowerPoint é denominado Transições. Para elementos *dentro* do slide, são as Animações. No entanto, 'Transições' é a opção mais comum para o fluxo da apresentação. Como não há 'Animações' como opção e o termo 'Transições' também se refere ao movimento de elementos, esta é a melhor resposta entre as dadas."
+        },
+        {
+            question: "15° Quanto aos conceitos básicos do editor de apresentações PowerPoint da Microsoft, analise as afirmativas abaixo e dê valores Verdadeiro (V) ou Falso (F). () É possível salvar uma apresentação em formato PDF no PowerPoint. () O PowerPoint permite personalizar o plano de fundo dos slides. () Não é possível inserir vídeos em uma apresentação de PowerPoint. Assinale a alternativa que apresenta a sequência correta de cima para baixo.",
+            options: ["A) V-F-F", "B) V-V-F", "C) F-V-V", "D) F-F-V"],
+            answer: "B) V-V-F",
+            explanation: "É possível salvar em PDF (V), personalizar plano de fundo (V) e é possível inserir vídeos (F, pois é possível). [cite: 189, 190]"
+        },
+        {
+            question: "16° Existe uma versão online de um aplicativo da Microsoft na Internet com a funcionalidade específica de um Editor de Apresentação. A Microsoft denominou oficialmente esse recurso com o nome:",
+            options: ["A) PowerOnline", "B) PowerPoint", "C) MicrosoftPoint", "D) OfficePoint", "E) Microsoft Power"],
+            answer: "B) PowerPoint",
+            explanation: "A versão online do PowerPoint é simplesmente parte do 'PowerPoint for the web' ou 'Microsoft 365' que inclui o PowerPoint online. Das opções, 'PowerPoint' é a mais direta e correta, já que o nome do aplicativo permanece o mesmo. [cite: 190, 191]"
+        },
+        {
+            question: "17° O software multi-plataforma que é destinado a produzir e editar apresentações de código aberto, e também incluso no pacote LibreOffice, é denominado tecnicamente _____.",
+            options: ["A) Impress", "B) Corel", "C) Draw", "D) Publisher"],
+            answer: "A) Impress",
+            explanation: "O Impress é o software de apresentação de código aberto incluído no pacote LibreOffice. [cite: 191, 192]"
+        },
+        {
+            question: "18° Quanto às teclas de atalho do editor de apresentação PowerPoint, analise as afirmativas a seguir e assinale a alternativa correta. 1. Com a tecla 'page down' posso ir para o próximo slide no PowerPoint. 2. Para ir para o slide anterior no PowerPoint posso usar a tecla 'page up'.",
+            options: ["A) As afirmativas 1 e 2 são verdadeiras", "B) A afirmativa 1 é verdadeira e a 2 é falsa", "C) A afirmativa 2 é verdadeira e a 1 é falsa", "D) As afirmativas 1 e 2 são falsas"],
+            answer: "A) As afirmativas 1 e 2 são verdadeiras",
+            explanation: "As teclas 'Page Down' e 'Page Up' são usadas para navegar entre slides no PowerPoint. [cite: 192, 193, 194, 195]"
+        },
+        {
+            question: "19º Existem diversas extensões de arquivos tais como: (1) PNG (3) CSS (2) GIF (4) JPG. Assinale somente as extensões de arquivos tipicamente usadas em imagens.",
+            options: ["A) Da relação apresentada existem somente o 1, 2 e 3", "B) Da relação apresentada existem somente o 1, 2 e 4", "C) Da relação apresentada existem somente o 2, 3 e 4", "D) Da relação apresentada existem somente o 1, 3 e 4"],
+            answer: "B) Da relação apresentada existem somente o 1, 2 e 4",
+            explanation: "PNG, GIF e JPG são extensões de arquivos de imagem. CSS é uma folha de estilos. [cite: 195, 196]"
+        },
+        {
+            question: "20° A extensão de arquivo .txt pode ser aberto por programas mais comuns e conhecidos da Microsoft tais como: (1) Notepad (2) Paint (3) Word (4) WordPad. Da relação apresentada:",
+            options: ["A) somente o 1, 2 e 3", "B) somente o 1, 2 e 4", "C) somente o 2, 3 e 4", "D) somente o 1, 3 e 4"],
+            answer: "D) somente o 1, 3 e 4",
+            explanation: "Notepad, Word e WordPad podem abrir arquivos .txt. Paint é um editor de imagens. [cite: 196, 197]"
+        },
+        {
+            question: "21º Ao criar um documento de texto, a extensão será:",
+            options: ["A) .jpg", "B) .pdf", "C) .txt", "D) .mp3"],
+            answer: "C) .txt",
+            explanation: "Ao criar um documento de texto simples, a extensão mais comum e básica é .txt. [cite: 197, 198]"
+        },
+        {
+            question: "22° Relacione as principais extensões de arquivo da coluna da esquerda com os seus respectivos tipos de arquivo da coluna da direita. (1) PNG (2) ZIP (3) MP3 (A) arquivo compactado. (B) arquivo de imagem. (C) arquivo de áudio. (D) arquivo de vídeo. (4) AVI",
+            options: ["A) 1A-2C-3D-4B", "B) 1B-2A-3C-4D", "C) 1B-2D-3A-4C", "D) 1D-2C-3B-4ª"],
+            answer: "B) 1B-2A-3C-4D",
+            explanation: "PNG é imagem, ZIP é compactado, MP3 é áudio, AVI é vídeo. [cite: 198, 199, 200]"
+        },
+        {
+            question: "23º Tanto no Excel, no PowerPoint ou no Word pode-se criar, por meio de um elemento gráfico, organogramas, diagramas e gráficos de fluxo. Analise a alternativa que apresenta o nome desse recurso.",
+            options: ["A) ArtSmart", "B) ClipArt", "C) ArtClip", "D) SmartArt"],
+            answer: "D) SmartArt",
+            explanation: "O recurso SmartArt permite criar elementos gráficos como organogramas, diagramas e gráficos de fluxo no Excel, PowerPoint e Word. [cite: 200, 201]"
+        },
+        {
+            question: "24° Existe uma versão online dos principais aplicativos do Pacote Microsoft Office na Internet. A Microsoft denominou oficialmente esse recurso com o nome:",
+            options: ["A) Microsoft Online", "B) Office na Nuvem", "C) Microsoft 365", "D) Office Online", "E) Microsoft na Nuvem"],
+            answer: "C) Microsoft 365",
+            explanation: "A versão online dos aplicativos do Microsoft Office é oficialmente denominada Microsoft 365 (antigo Office 365). [cite: 201, 202]"
+        },
+        {
+            question: "25° Relacione os principais aplicativos do Pacote Microsoft Office da coluna da esquerda com a respectiva funcionalidade da coluna da direita. (1) OneNote (2) Access (3) Outlook (A) Aplicativo de banco de dados. (B) Programa para enviar e receber emails. (C) Programa de anotações de forma livre.",
+            options: ["A) 1C-2A-3B", "B) 1B-2C-3A", "C) 1B-2A-3C", "D) 1A-2B-3C"],
+            answer: "A) 1C-2A-3B",
+            explanation: "OneNote é para anotações, Access é banco de dados, Outlook é para e-mails. [cite: 202, 203, 204, 205]"
+        },
+        {
+            question: "26° A Microsoft disponibilizou vários aplicativos do pacote Office na internet. A versão online atual do Pacote Microsoft Office denomina-se oficialmente por:",
+            options: ["A) Microsoft Online", "B) Office na Web", "C) Microsoft 365", "D) Office Online"],
+            answer: "C) Microsoft 365",
+            explanation: "A versão online atual do Pacote Microsoft Office é o Microsoft 365. [cite: 205, 206]"
+        },
+        {
+            question: "27° Assinale a alternativa que não apresenta um dos aplicativos existentes no Pacote Microsoft Office.",
+            options: ["A) Realtek", "B) OneNote", "C) Access", "D) Outlook"],
+            answer: "A) Realtek",
+            explanation: "Realtek é uma empresa de hardware e software, não um aplicativo do Pacote Microsoft Office. OneNote, Access e Outlook são aplicativos do Office. [cite: 206, 207]"
+        },
+        {
+            question: "28° Na grande maioria de computadores, com o Windows, o teclado possui uma tecla específica caracterizada com as seguintes letras: 'PrtScr', ou algo muito semelhante. A principal finalidade desta tecla de atalho é a de:",
+            options: ["A) gravar em um arquivo todas as posições das telas abertas em um computador", "B) imprimir diretamente para uma impressora o que estiver na tela do computador", "C) testar a qualidade de impressão imprimindo uma folha de teste especial", "D) capturar uma imagem de toda a tela e a copiar para a Área de Transferência"],
+            answer: "D) capturar uma imagem de toda a tela e a copiar para a Área de Transferência",
+            explanation: "A tecla 'PrtScr' (Print Screen) captura uma imagem da tela e a copia para a Área de Transferência. [cite: 207, 208]"
+        },
+        {
+            question: "29° Relacione as duas colunas quanto as teclas de atalho do editor de apresentação PowerPoint e suas respectivas funcionalidades. (1) Ctrl+M (2) Ctrl+Z (3) Ctrl+S (A) Desfazer a última ação. (B) Salvar a apresentação. (C) Adicionar um novo slide. Assinale a alternativa que apresenta a relação correta.",
+            options: ["A) 1A-2B-3C", "B) 1B-2C-3A", "C) 1B-2A-3C", "D) 1C-2A-3B"],
+            answer: "D) 1C-2A-3B",
+            explanation: "Ctrl+M adiciona novo slide, Ctrl+Z desfaz a última ação, Ctrl+S salva a apresentação. [cite: 208, 209, 210]"
+        },
+        {
+            question: "30° Arquivos em geral possuem extensões, desta forma, assinale a alternativa que apresenta qual é o formato de arquivo padrão para documentos criados no Microsoft Word.",
+            options: ["A) .pdf", "B) .txt", "C) .html", "D) .docx", "E) .rtf"],
+            answer: "D) .docx",
+            explanation: "O formato de arquivo padrão para documentos criados no Microsoft Word (versões mais recentes) é .docx. [cite: 211, 212]"
+        },
+        {
+            question: "31° Editores de texto são constantemente utilizados para se gerar documentos diversos. Assinale a alternativa que apresenta qual editor de texto é baseado em nuvem, permitindo a colaboração em tempo real e o acesso a partir de diferentes dispositivos.",
+            options: ["A) Notepad", "B) TextEdit", "C) Microsoft Word 2010", "D) WordPerfect", "E) Google Docs"],
+            answer: "E) Google Docs",
+            explanation: "Google Docs é um editor de texto baseado em nuvem que permite colaboração em tempo real. [cite: 212, 213, 214]"
+        },
+        {
+            question: "32° Sobre o editor de texto Word do Microsoft Office, analise as afirmativas abaixo e dê valores Verdadeiro (V) ou Falso (F). () Oferece uma ampla gama de opções de formatação de texto, incluindo tamanho da fonte, tipo de fonte, estilo de fonte e cor da fonte. () Para criar e formatar tabelas de forma rápida e fácil, o Word necessita que seja instalado a planilha eletrônica do Excel. () Só na última versão do Word existe uma variedade de opções para proteger documentos, incluindo proteção por senha. Assinale a alternativa que apresenta a sequência correta de cima para baixo.",
+            options: ["A) V-F-F", "B) V-V-F", "C) F-V-V", "D) F-F-V"],
+            answer: "A) V-F-F",
+            explanation: "O Word oferece ampla formatação de texto (V). O Word não precisa do Excel para criar tabelas (F). Opções de proteção por senha existem em várias versões, não 'só na última' (F). [cite: 214, 215, 216, 217, 218, 219]"
+        },
+        {
+            question: "33º No editor de texto Word do Microsoft Office muitas vezes é necessário inserir uma nova página em um documento. Assinale a alternativa que apresenta o atalho de teclado que permite inserir uma nova página.",
+            options: ["A) Enter + Enter", "B) Ctrl + Enter", "C) Tab + Enter", "D) Ctrl + Shift + Enter"],
+            answer: "B) Ctrl + Enter",
+            explanation: "O atalho de teclado para inserir uma nova página (quebra de página) no Word é Ctrl + Enter. [cite: 219, 220, 221]"
+        },
+        {
+            question: "34° Ao utilizamos editores de texto, como exemplo, o Microsoft Word, temos a possibilidade de utilizar formatação condicional. Desta forma, assinale a alternativa que apresenta a que se refere esta técnica em um editor de texto.",
+            options: ["A) Um recurso que permite aplicar automaticamente formatação com base em regras definidas, como cores de fundo ou texto", "B) Um recurso que permite aplicar uma extensão customizada para o seu arquivo", "C) Um recurso que permite integrar inteligência artificial para escrever o texto para você", "D) Um recurso que permite integrar o Word aos outros aplicativos do computador", "E) Um recurso que permite a formatação do sistema operacional, de forma que já customize os programas a serem instalados"],
+            answer: "A) Um recurso que permite aplicar automaticamente formatação com base em regras definidas, como cores de fundo ou texto",
+            explanation: "Em editores de texto (e principalmente em planilhas), formatação condicional permite aplicar formatação automaticamente com base em regras, como mudar a cor de fundo de um texto se ele atender a uma condição. [cite: 221, 222, 223]"
+        },
+        {
+            question: "35° Quanto ao MS-Word, analise as afirmativas abaixo. I. Não é possível alterar a fonte e o tamanho do texto no MS-Word. II. É possível inserir imagens e gráficos em um documento no MS-Word. III. O MS-Word permite a criação de documentos com duas colunas. Estão corretas as afirmativas:",
+            options: ["A) I e II apenas", "B) II e III apenas", "C) I e III apenas", "D) I, II e III"],
+            answer: "B) II e III apenas",
+            explanation: "É possível alterar fonte e tamanho (I é falsa). É possível inserir imagens e gráficos (II é verdadeira). É possível criar documentos com duas colunas (III é verdadeira). [cite: 224, 225, 226, 227]"
+        },
+        {
+            question: "36° Leia a frase abaixo referente ao editor de texto Word da Microsoft: 'Para salvar um documento com um novo nome, basta selecionar a opção _______ na guia 'Arquivo' e na caixa _______ insira um novo nome para o arquivo.' Assinale a alternativa que preencha correta e respectivamente as lacunas.",
+            options: ["A) Salvar como / Novo nome", "B) Gravar como / Novo nome", "C) Salvar como / Nome do arquivo", "D) Gravar como / Nome do arquivo"],
+            answer: "C) Salvar como / Nome do arquivo",
+            explanation: "Para salvar um documento com um novo nome, usa-se a opção 'Salvar como' e define-se o 'Nome do arquivo'. [cite: 228, 229, 230]"
+        },
+        {
+            question: "37° Quanto às últimas versões do Editor de Texto do Pacote Microsoft Office (em português), temos no menu Revisão do Word os seguintes recursos, exceto:",
+            options: ["A) Dicionário de Sinônimos", "B) Ler em Voz Alta", "C) Contagem de Palavras", "D) Mostrar Comentários", "E) Macros"],
+            answer: "E) Macros",
+            explanation: "Dicionário de Sinônimos, Ler em Voz Alta, Contagem de Palavras e Mostrar Comentários são recursos da aba Revisão. Macros geralmente estão na aba Desenvolvedor (ou em Exibir > Macros). [cite: 230]"
+        },
+        {
+            question: "38° Quanto aos principais recursos existentes no editor de texto do Pacote Microsoft Office, analise as afirmativas abaixo e assinale a alternativa correta. 1. O Word possibilita a inserção de gráficos, planilhas e desenhos. II. As últimas versões do Word não possuem revisor ortográfico. III. O editor de texto da Microsoft contém o recurso de Mala-Direta. Das afirmativas:",
+            options: ["A) apenas I e II são tecnicamente verdadeiras", "B) apenas II e III são tecnicamente verdadeiras", "C) apenas I e III são tecnicamente verdadeiras", "D) I, II e III são tecnicamente verdadeiras"],
+            answer: "C) apenas I e III são tecnicamente verdadeiras",
+            explanation: "O Word possibilita a inserção de gráficos, planilhas e desenhos (I é verdadeira). As últimas versões do Word *possuem* revisor ortográfico (II é falsa). O Word contém o recurso de Mala-Direta (III é verdadeira). [cite: 231, 232, 233, 234]"
+        },
+        {
+            question: "39º As últimas versões do Microsoft Word inclui vários tipos diferentes de guias tais como: 1. Exibição. 2. Layout da Página. 3. Revisão. Da relação apresentada:",
+            options: ["A) existem somente o 1 e 2", "B) existem somente o 1 e 3", "C) existem somente o 2 e 3", "D) existem todas"],
+            answer: "D) existem todas",
+            explanation: "Exibição, Layout da Página (ou Layout) e Revisão são guias presentes nas últimas versões do Microsoft Word. [cite: 234, 235, 236]"
+        },
+        {
+            question: "40° A imagem que segue foi obtida através da seleção na Aba principal do Microsoft Word intitulada: [IMAGEM COM OPÇÕES DE SUMÁRIO E NOTAS DE RODAPÉ] Adicionar Texto, Sumário, Atualizar Sumário, Inserir Nota de Rodapé, Inserir Nota de Fim, Próxima Nota de Rodapé, Mostrar Notas.",
+            options: ["A) Referências", "B) Layout", "C) Inserir", "D) Exibir"],
+            answer: "A) Referências",
+            explanation: "A aba 'Referências' no Microsoft Word contém opções relacionadas a sumários, notas de rodapé, citações e bibliografia. [cite: 236]"
+        },
+        {
+            question: "41º Assinale, das alternativas a seguir, a única que identifica correta e respectivamente os softwares de navegação (browser), o de correio eletrônico e o de busca/pesquisa específicos da Microsoft.",
+            options: ["A) Bing, Outlook e Edge", "B) Edge, Outlook e Bing", "C) Outlook, Edge e Bing", "D) Edge, Bing e Outlook"],
+            answer: "B) Edge, Outlook e Bing",
+            explanation: "Edge é o navegador da Microsoft, Outlook é o cliente de e-mail e Bing é o buscador. [cite: 236, 237]"
+        },
+        {
+            question: "42° Assinale a alternativa que apresenta um sistema operacional.",
+            options: ["A) Microsoft Office", "B) Google Chrome", "C) PowerPoint", "D) Linux", "E) Photoshop"],
+            answer: "D) Linux",
+            explanation: "Linux é um sistema operacional. Microsoft Office, Google Chrome, PowerPoint e Photoshop são softwares aplicativos. [cite: 237, 238]"
+        },
+        {
+            question: "43º Assinale a única alternativa que esteja tecnicamente correta quanto a ser respectivamente a identificação de um típico endereço de uma página de Internet (URL), e em seguida um genérico endereço de correio eletrônico:",
+            options: ["A) www.nome_da_entidade.com.br seu_nome@nome_da_entidade.com.br", "B) nome_da_entidade.com.br@seu_nome http:nome_da_entidade.com.br", "C) htpp:nome_da_entidade.com.br seu_nome@nome_da_entidade.com.br", "D) seu_nome@nome_da_entidade.com.br www.nome da entidade.com.br", "E) www.nome_da_entidade.com.br nome_da_entidade.com.br@seu_nome"],
+            answer: "A) www.nome_da_entidade.com.br seu_nome@nome_da_entidade.com.br",
+            explanation: "Uma URL típica para uma página da internet começa com 'www.' e um endereço de e-mail típico tem o formato 'usuario@dominio'. [cite: 238, 239, 400]"
+        },
+        {
+            question: "44° Os principais navegadores de Internet (browsers) atualmente possuem a capacidade de ler vários tipos de arquivos. Assinale, das alternativas abaixo, o tipo de arquivo que os browsers não conseguem ler de forma nativa:",
+            options: ["A) PPTX", "B) GIF", "C) PNG", "D) JPEG"],
+            answer: "A) PPTX",
+            explanation: "Navegadores conseguem ler nativamente arquivos de imagem como GIF, PNG e JPEG. Arquivos PPTX (PowerPoint) geralmente exigem software específico ou um visualizador. [cite: 239, 240]"
+        },
+        {
+            question: "45° Sobre noções básicas de informática, assinale a alternativa que preencha correta e respectivamente as lacunas.'_______' é um conjunto de programas que permite o funcionamento e utilização da máquina. O '_______' é um programa que possibilita o acesso a internet. Um cavalo de Troia é um '_______' que entra no computador e cria uma porta para uma possível invasão. Um '_______' é um dispositivo de uma rede de computadores que tem por objetivo aplicar uma política de segurança a um determinado ponto da rede.",
+            options: ["A) Navegador/software/firewall / malware", "B) Malware / navegador/software / firewall", "C) Software / malware / firewall / navegador", "D) Navegador / malware/firewall/software", "E) Software / navegador / malware / firewall"],
+            answer: "E) Software / navegador / malware / firewall",
+            explanation: "Software é um conjunto de programas. Navegador possibilita acesso à internet. Cavalo de Troia é um malware. Firewall é um dispositivo de segurança de rede. [cite: 240, 241, 242]"
+        },
+        {
+            question: "46° Quanto ao navegador web denominado Mozilla Firefox, analise as afirmativas abaixo e assinale a alternativa correta: I. Existem vários itens dentro do histórico do Mozilla Firefox, inclusive cache e cookies. II. É possível no Mozilla Firefox bloquear cookies em um site específico. III. Não existe a opção no Firefox de limpar automaticamente o cache. Das afirmativas:",
+            options: ["A) Apenas I é a tecnicamente verdadeira.", "B) Apenas I e II são tecnicamente verdadeiras.", "C) Apenas II e III são tecnicamente verdadeiras.", "D) Apenas I e III são tecnicamente verdadeiras.", "E) I, II e III são tecnicamente verdadeiras."],
+            answer: "B) Apenas I e II são tecnicamente verdadeiras.",
+            explanation: "O histórico do Firefox inclui cache e cookies (I é verdadeira). É possível bloquear cookies (II é verdadeira). Existe a opção de limpar o cache automaticamente (III é falsa). [cite: 242, 243, 244, 245, 246, 247]"
+        },
+        {
+            question: "47° Quanto à Internet, analise as afirmativas abaixo e dê valores Verdadeiro (V) ou Falso (F). () WWW, ou apenas web, significa World Wide Web (Rede de Alcance Mundial). () Qualquer computador que deseje se comunicar na Internet precisa se comunicar em PCT/PI. () Browser é um programa que permite ao usuário consultar (navegar) páginas na Internet. Assinale a alternativa que apresenta a sequência correta de cima para baixo.",
+            options: ["A) V, V, V", "B) V, V, F", "C) V, F, V", "D) F, F, V", "E) F, F, F"],
+            answer: "A) V, V, V",
+            explanation: "Todas as afirmativas estão corretas: WWW é World Wide Web (V), computadores na internet usam TCP/IP (V), e browser é um programa para navegar na internet (V). [cite: 247, 248, 249, 250, 251, 252]"
+        },
+        {
+            question: "48° Entre os principais sites de busca, ou também chamado de ferramentas de busca, disponíveis na Internet temos: 1. Yahoo 2. Access 3. Bing Assinale a alternativa correta.",
+            options: ["A) Da relação apresentada existem somente o 1 e 2", "B) Da relação apresentada existem somente o 1 e 3", "C) Da relação apresentada existem somente o 2 e 3", "D) Da relação apresentada existem 1, 2 e 3"],
+            answer: "B) Da relação apresentada existem somente o 1 e 3",
+            explanation: "Yahoo e Bing são sites de busca. Access é um programa de banco de dados da Microsoft Office. [cite: 252, 253, 254]"
+        },
+        {
+            question: "49º Quanto aos conceitos de Internet, Intranet e Extranet, analise as afirmativas a seguir e assinale a alternativa correta. (1) Basicamente a Intranet é uma rede aberta atendendo colaboradores internos. (2) Em especial a Extranet foca em atender clientes e parceiros comerciais.",
+            options: ["A) As afirmativas (1) e (2) são verdadeiras", "B) A afirmativa (1) é verdadeira e a (2) é falsa", "C) A afirmativa (2) é verdadeira e a (1) é falsa", "D) As afirmativas (1) e (2) são falsas"],
+            answer: "C) A afirmativa (2) é verdadeira e a (1) é falsa",
+            explanation: "A Intranet é uma rede *fechada/restrita* para colaboradores internos, não aberta (1 é falsa). A Extranet foca em atender clientes e parceiros comerciais, estendendo a intranet para fora da organização de forma controlada (2 é verdadeira). [cite: 254, 255, 256, 257]"
+        },
+        {
+            question: "50º Assinale a alternativa que apresenta o conceito de Internet.",
+            options: ["A) sistema de comunicação utilizado exclusivamente por empresas", "B) rede de computadores limitada a uma área geográfica específica", "C) rede global de computadores interligados que permite o compartilhamento de informações", "D) plataforma de jogos online", "E) rede de televisão via streaming"],
+            answer: "C) rede global de computadores interligados que permite o compartilhamento de informações",
+            explanation: "A Internet é uma rede global de computadores interligados que possibilita o compartilhamento de informações e recursos. [cite: 257, 258]"
+        },
+        {
+            question: "51º Quanto aos conceitos básicos sobre Correios Eletrônicos, analise as afirmativas a seguir e dê valores Verdadeiro (V) ou Falso (F). ( ) O serviço gratuito de webmail do Google é denominado tecnicamente de Gmail. ( ) Para encaminhar mensagens não é necessário que o destinatário esteja conectado à internet. ( ) A rigor não existe diferença técnica nenhuma entre uma página web e o correio eletrônico. Assinale a alternativa que apresenta a sequência correta de cima para baixo.",
+            options: ["A) V - F - F", "B) V - V - F", "C) F - V - V", "D) F - F - V"],
+            answer: "A) V - F - F",
+            explanation: "O webmail do Google é o Gmail (V). O destinatário não precisa estar online no momento do envio, mas precisa acessar o e-mail para receber a mensagem (Falso, precisa estar conectado à internet em algum momento para a mensagem ser entregue). Página web e e-mail têm diferenças técnicas fundamentais (Falso). [cite: 258, 259, 260, 261, 262, 263]"
+        },
+        {
+            question: "52º Assinale a alternativa que esteja tecnicamente incorreta quanto às principais características dos Correios Eletrônicos.",
+            options: ["A) as mensagens não podem ser arquivadas e armazenadas, para fazer consultas posteriores", "B) é importante acessar periodicamente os emails para não acumular às mensagens", "C) é possível enviar a mesma mensagem a um grupo pré-definido de pessoas", "D) é possível receber vírus de computador através de e-mail", "E) existe a possibilidade de compor e revisar a mensagem antes de enviá-la"],
+            answer: "A) as mensagens não podem ser arquivadas e armazenadas, para fazer consultas posteriores",
+            explanation: "É tecnicamente incorreta a afirmativa A. Mensagens de e-mail podem e são arquivadas e armazenadas para consultas futuras. [cite: 263, 264]"
+        },
+        {
+            question: "53º Assinale a alternativa que apresenta especificamente uma ferramenta de correio eletrônico.",
+            options: ["A) Microsoft Word", "B) Google Chrome", "C) Photoshop", "D) Outlook", "E) Excel"],
+            answer: "D) Outlook",
+            explanation: "Outlook é uma ferramenta de correio eletrônico. Os outros são editor de texto, navegador, editor de imagem e planilha eletrônica, respectivamente. [cite: 264, 265]"
+        },
+        {
+            question: "54º Leia a definição técnica abaixo: 'tipo de código malicioso que torna inacessíveis os dados armazenados em um equipamento, geralmente usando criptografia, e que exige pagamento de resgate para restabelecer o acesso ao usuário.' Assinale a alternativa que corresponda a esse conceito.",
+            options: ["A) rootkit", "B) botnet", "C) backdoor", "D) ransomware"],
+            answer: "D) ransomware",
+            explanation: "Ransomware é um tipo de malware que criptografa dados e exige resgate para restaurar o acesso. [cite: 265, 266]"
+        },
+        {
+            question: "55º Existe um malware que aparenta ser um arquivo totalmente normal e seguro, mas dentro dele há um código malicioso que pode ser usado para espionar, controlar e executar várias ações no computador. Sobre a definição apresentada anteriormente, assinale a alternativa que esteja tecnicamente correta.",
+            options: ["A) Hijacker", "B) Spyware", "C) Ransomware", "D) Trojan Horse"],
+            answer: "D) Trojan Horse",
+            explanation: "A definição corresponde a um Trojan Horse (Cavalo de Troia), que se disfarça de software legítimo. [cite: 266, 267]"
+        },
+        {
+            question: "56º Quanto aos conceitos básicos de Segurança da Informação, analise as afirmativas a seguir e assinale a alternativa correta. I. O SSD (Solid State Drive) é um dispositivo de armazenamento. II. Existe tanto criptografia de chave única como de chave dupla. III. Os vírus e os worms são exemplos típicos de malwares. Das afirmativas:",
+            options: ["A) Apenas I e II são tecnicamente verdadeiras", "B) Apenas II e III são tecnicamente verdadeiras", "C) Apenas I e III são tecnicamente verdadeiras", "D) I, II e III são tecnicamente verdadeiras"],
+            answer: "D) I, II e III são tecnicamente verdadeiras",
+            explanation: "Todas as afirmativas estão corretas. SSD é um dispositivo de armazenamento (I), existem criptografias simétrica (chave única) e assimétrica (chave dupla) (II), e vírus e worms são tipos de malwares (III). [cite: 267, 268, 269, 270, 271]"
+        },
+        {
+            question: "57º Quanto aos códigos maliciosos de computador, analise as afirmativas abaixo e assinale a alternativa correta. I. O Windows Defender é um antivírus gratuito oficial que vem acompanhado no Windows 10. II. Existe uma premissa básica de que todos os vírus são categorizados como malwares. III. Os Trojans são malwares que sequestram os dados do computador na busca de resgate. Das afirmativas:",
+            options: ["A) Apenas I é tecnicamente verdadeira.", "B) Apenas I e II são tecnicamente verdadeiras.", "C) Apenas II e III são tecnicamente verdadeiras.", "D) Apenas I e III são tecnicamente verdadeiras.", "E) I, II e III são tecnicamente verdadeiras."],
+            answer: "B) Apenas I e II são tecnicamente verdadeiras.",
+            explanation: "Windows Defender é o antivírus do Windows 10 (I é verdadeira). Vírus são uma categoria de malwares (II é verdadeira). Trojans se disfarçam, Ransomware sequestra dados (III é falsa). [cite: 271, 272, 273, 274, 275, 276, 277]"
+        },
+        {
+            question: "58º No contexto da computação, Vírus e worms são:",
+            options: ["A) ferramentas de busca na internet", "B) tipos de sistema operacional", "C) softwares de edição de vídeo", "D) tipos de proteção contra incêndio", "E) tipos de software malicioso"],
+            answer: "E) tipos de software malicioso",
+            explanation: "Vírus e worms são categorizados como software malicioso, ou malware. [cite: 277]"
+        },
+        {
+            question: "59º O objetivo específico de um software antispyware é:",
+            options: ["A) editar imagens", "B) proteger contra ataques de phishing", "C) bloquear vírus de computador", "D) remover software malicioso que coleta informações sem consentimento", "E) fornecer serviços de armazenamento em nuvem"],
+            answer: "D) remover software malicioso que coleta informações sem consentimento",
+            explanation: "Antispyware é projetado para detectar e remover programas espiões que coletam informações sem o consentimento do usuário. [cite: 278]"
+        },
+        {
+            question: "60º Assinale a alterativa que apresenta a finalidade principal de um firewall.",
+            options: ["A) Editar textos e criar planilhas", "B) Proteger contra vírus de computador", "C) Criar backups de arquivos", "D) Fornecer acesso à internet", "E) Controlar o tráfego de rede e proteger contra acessos não autorizados"],
+            answer: "E) Controlar o tráfego de rede e proteger contra acessos não autorizados",
+            explanation: "A principal finalidade de um firewall é controlar o tráfego de rede, agindo como uma barreira de segurança para proteger contra acessos não autorizados. [cite: 278, 279, 280]"
+        },
+        {
+            question: "61º Antivírus é:",
+            options: ["A) um programa de edição de vídeos", "B) uma rede de comunicação entre dispositivos eletrônicos", "C) um sistema operacional", "D) um aplicativo de segurança que detecta e remove software malicioso", "E) um tipo de vírus de computador"],
+            answer: "D) um aplicativo de segurança que detecta e remove software malicioso",
+            explanation: "Antivírus é um software de segurança que detecta, previne e remove softwares maliciosos. [cite: 279]"
+        },
+        {
+            question: "62º Dada a definição técnica abaixo, assinale a alternativa que corresponda especificamente a esse conceito: 'é uma combinação de hardware e software que isola a rede interna de uma organização da Internet, permitindo implementar uma política de controle de acesso, bloqueando ou permitindo a passagem de pacotes'",
+            options: ["A) firewall", "B) switch", "C) roteador", "D) gateway"],
+            answer: "A) firewall",
+            explanation: "A definição se refere a um firewall, que controla o tráfego entre redes, bloqueando ou permitindo pacotes. [cite: 280]"
+        },
+        {
+            question: "63º Assinale a alternativa que define o que é phishing.",
+            options: ["A) Um tipo de vírus de computador", "B) Uma rede social", "C) Uma técnica de ataque cibernético que visa enganar os usuários para obter informações pessoais", "D) Um sistema de busca na internet", "E) Um aplicativo de edição de fotos"],
+            answer: "C) Uma técnica de ataque cibernético que visa enganar os usuários para obter informações pessoais",
+            explanation: "Phishing é uma técnica de ataque cibernético que busca enganar usuários para que revelem informações confidenciais. [cite: 281]"
+        },
+        {
+            question: "64º Dado as definições e características de vários elementos de interconexão de redes de computadores, identifique a alternativa que corresponda a esses equipamentos conforme a sequência abaixo: 1º são capazes de definir a melhor rota para os pacotes de dados. 2º encaminha os pacotes de acordo com o endereço MAC de destino. 3º permite interfacear com outra rede que usa protocolos diferentes.",
+            options: ["A) 1º roteador - 2º gateway - 3º switch", "B) 1º gateway - 2º switch - 3º roteador", "C) 1º roteador - 2º switch - 3º gateway", "D) 1º switch - 2º roteador - 3º gateway"],
+            answer: "C) 1º roteador - 2º switch - 3º gateway",
+            explanation: "Roteadores definem rotas (1º). Switches encaminham por MAC (2º). Gateways interfaceiam redes com protocolos diferentes (3º). [cite: 282, 283, 284]"
+        },
+        {
+            question: "65º O TCP/IP são um conjunto de protocolos compostos pelo TCP (Transmission Control Protocol) e o IP (Internet Protocol). O conjunto de protocolos pode ser visto como um modelo de camadas. Portanto, eles correspondem respectivamente às camadas:",
+            options: ["A) Camada de Transporte - Camada de Rede", "B) Camada de Transição - Camada de Internet", "C) Camada de Rede - Camada de Transporte", "D) Camada de Internet - Camada de Transição"],
+            answer: "A) Camada de Transporte - Camada de Rede",
+            explanation: "TCP atua na Camada de Transporte e IP na Camada de Rede (ou Camada de Internet, dependendo do modelo). [cite: 284, 285, 286]"
+        },
+        {
+            question: "66º Quanto aos protocolos e serviços de redes de comunicação, assinale a alternativa incorreta",
+            options: ["A) SMTP é o protocolo padrão de envio de mensagens de correio eletrônico através da Internet", "B) o DNS permite manter o relógio de um computador sincronizado com a hora sempre certa e com grande exatidão", "C) o FTP é basicamente um tipo de conexão que permite a troca de arquivos entre dois computadores conectados à Internet", "D) DHCP é um protocolo utilizado em redes de computadores que permite a estes obterem um endereço IP automaticamente"],
+            answer: "B) o DNS permite manter o relógio de um computador sincronizado com a hora sempre certa e com grande exatidão",
+            explanation: "O DNS (Domain Name System) traduz nomes de domínio para endereços IP, não sincroniza o relógio. O protocolo para sincronização de relógios é o NTP (Network Time Protocol). As outras alternativas estão corretas. [cite: 286, 287]"
+        },
+        {
+            question: "67º Um funcionário da Empresa Cuiabana de Saúde Pública está utilizando o browser Google Chrome versão 53.0.2785 e executou os procedimentos abaixo. Configurou o endereço https://www.google.com/ como 'Página Inicial' nesse browser. Após navegar em diversos sites, no momento, esse funcionário está acessando o conteúdo do site cuja URL é http:/www.cuiaba.rrt.qavlx/ggac:s/emg-esa-cuiabana-ce-saude/ Para acessar o site do Google, configurado como 'Página Inicial', o funcionário deve executar o seguinte atalho de teclado:",
+            options: ["A) Alt + Home", "B) Alt + Pg Up", "C) Ctrl + Home", "D) Ctrl + Pg Up"],
+            answer: "A) Alt + Home",
+            explanation: "O atalho de teclado para ir para a página inicial no Google Chrome (e em outros navegadores) é Alt + Home. [cite: 287, 288]"
+        },
+        {
+            question: "68º Com o emprego dos recursos da internet, existe um modelo de rede de computadores, de acesso exclusivo de uma empresa ou corporação, usado para armazenamento de informações, constituindo um importante veículo de comunicação entre seus funcionários. Nesse ambiente, os funcionários recebem comunicados, trocam informações com outros departamentos e consultam dados necessários para o desempenho de suas atividades, com maior agilidade nos processos e na interação entre eles. Nessa rede, há padrões de segurança para impedir que a rede seja acessada por pessoas não autorizadas e os funcionários precisam de login e senha para ter acesso à rede. Essa rede de computadores é conhecida como:",
+            options: ["A) bitnet.", "B) intranet.", "C) extranet.", "D) metronet."],
+            answer: "B) intranet.",
+            explanation: "A descrição se encaixa perfeitamente com uma Intranet: rede interna exclusiva para funcionários de uma organização, com acesso restrito. [cite: 288, 289, 290, 291, 292, 293]"
+        },
+        {
+            question: "69º Uma autarquia federal vai implantar um ambiente de intranet em sua rede local. Uma característica associada à intranet é que essa é uma rede:",
+            options: ["A) com várias máquinas externas à empresa, conectadas entre si, formando uma grande rede, na qual usuários cadastrados ou não podem ter acesso às páginas disponibilizadas e aos serviços.", "B) na qual os usuários se conectam via VPNs, ou via o TCP/IP global, tendo, assim, acesso tanto aos sites internos quantos externos da empresa, também acessando os serviços de baixa de arquivos livres.", "C) com controle centralizado, que permite acesso aos seus serviços através apenas de aplicativos ou terminais denominados de burros, pois esses terminais não possuem capacidade de processamento.", "D) de comunicação que utiliza o conjunto de protocolos TCP/ IP para prover conexão e acesso aos serviços proprietários de dentro da empresa, permitindo acesso apenas a pessoas autorizadas ou com privilégios na rede da empresa."],
+            answer: "D) de comunicação que utiliza o conjunto de protocolos TCP/ IP para prover conexão e acesso aos serviços proprietários de dentro da empresa, permitindo acesso apenas a pessoas autorizadas ou com privilégios na rede da empresa.",
+            explanation: "Uma intranet é uma rede privada que utiliza protocolos de internet (TCP/IP) para fornecer acesso a serviços e informações internas, restrita a usuários autorizados. [cite: 294, 295, 296, 297, 298]"
+        },
+        {
+            question: "70º Um usuário de computador teve sua máquina infectada por um vírus que monitora, em silêncio, a atividade do computador, registrando tudo o que foi digitado pelo teclado. Esse tipo de vírus é identificado como:",
+            options: ["A) spoofing.", "B) dialer syn.", "C) keylogger.", "D) brutal force."],
+            answer: "C) keylogger.",
+            explanation: "Um keylogger é um tipo de software malicioso que registra as teclas digitadas pelo usuário. [cite: 299, 300, 301]"
+        },
+        {
+            question: "71º Um usuário de computador, por meio do buscador do Google, está utilizando um termo de pesquisa que faz com que os resultados de busca sejam os links de acesso direto a um tipo de documento (tipo pdf, doc, docx, xls., xlsx etc). Esse tipo de termo é o:",
+            options: ["A) info.", "B) filetype.", "C) allintext.", "D) podcast."],
+            answer: "B) filetype.",
+            explanation: "O operador 'filetype:' é usado em buscadores como o Google para restringir os resultados a um tipo de arquivo específico (e.g., filetype:pdf). [cite: 302, 303]"
+        },
+        {
+            question: "72º Assinale a alternativa que esteja tecnicamente incorreta quanto às principais características dos Correios Eletrônicos.",
+            options: ["A) as mensagens não podem ser arquivadas e armazenadas, para fazer consultas posteriores", "B) é importante acessar periodicamente os emails para não acumular às mensagens", "C) é possível enviar a mesma mensagem a um grupo pré-definido de pessoas", "D) é possível receber vírus de computador através de e-mail", "E) existe a possibilidade de compor e revisar a mensagem antes de enviá-la"],
+            answer: "A) as mensagens não podem ser arquivadas e armazenadas, para fazer consultas posteriores",
+            explanation: "Mensagens de e-mail podem ser arquivadas e armazenadas para consultas posteriores. As outras opções são características corretas dos e-mails. [cite: 304, 305]"
+        },
+        {
+            question: "73º Um protocolo seguro para transferir mensagens e conteúdo de páginas entre os navegadores locais e os servidores Web é o:",
+            options: ["A) POP", "B) ICMP", "C) PING", "D) HTTPS"],
+            answer: "D) HTTPS",
+            explanation: "HTTPS (Hypertext Transfer Protocol Secure) é o protocolo seguro para comunicação entre navegadores e servidores web. POP é para e-mail, ICMP e PING são para diagnóstico de rede. [cite: 305]"
+        },
+        {
+            question: "74º Quanto aos dispositivos para armazenamento de dados, analise as afirmativas abaixo. I. Os dispositivos denominados HD (Hard Disk) foram projetados para nunca serem propensos a falhas mecânicas. II. Atualmente os dispositivos de armazenamento de dados oferecem muito espaço para armazenamento de arquivos. III. Existem dispositivos de armazenamento de dados que são portáteis e facilmente transportados.",
+            options: ["A) Apenas a afirmativa I é tecnicamente falsa", "B) Apenas as afirmativas I e II são tecnicamente falsas", "C) Apenas as afirmativas II e III são tecnicamente falsas", "D) Apenas as afirmativas I e III são tecnicamente falsas", "E) As afirmativas I, II e III são tecnicamente falsas"],
+            answer: "A) Apenas a afirmativa I é tecnicamente falsa",
+            explanation: "HDs (Hard Disks) possuem partes mecânicas e são propensos a falhas mecânicas (I é falsa). Atualmente, dispositivos oferecem muito espaço (II é verdadeira) e há dispositivos portáteis (III é verdadeira). [cite: 306, 307, 308, 309, 310]"
+        },
+        {
+            question: "75º Um dos principais softwares do Microsoft Office é o Excel, que é um software de criação de planilhas eletrônicas. As planilhas eletrônicas têm como principal finalidade:",
+            options: ["A) armazenar arquivos de música", "B) editar documentos de texto", "C) realizar cálculos e organizar dados", "D) criar desenhos e gráficos", "E) realizar processamento de vídeo"],
+            answer: "C) realizar cálculos e organizar dados",
+            explanation: "A principal finalidade das planilhas eletrônicas como o Excel é realizar cálculos, analisar e organizar dados. [cite: 310, 311]"
+        },
+        {
+            question: "76º No MS Excel 2010, idioma português, configuração padrão existe a funcionalidade “Quebrar Texto Automaticamente”. Assinale a alternativa correta sobre o menu no qual se encontra esta funcionalidade:",
+            options: ["A) Layout da Página", "B) Página Inicial", "C) Dados", "D) Revisão", "E) Exibição"],
+            answer: "B) Página Inicial",
+            explanation: "A funcionalidade 'Quebrar Texto Automaticamente' no Excel está localizada na guia 'Página Inicial' (grupo Alinhamento). [cite: 311, 312]"
+        },
+        {
+            question: "77º Paulo precisa montar um relatório no MS Excel 2010, idioma português, configuração padrão que some os valores menores do que quinze no intervalo de células de A1 até A5. Assinale a alternativa correta que representa a fórmula que Paulo irá utilizar:",
+            options: ["A) =SOMASE(A1:A5;<15)", "B) =SE(A1:A5<15;SOMA())", "C) =SOMASE(A1:A5;\"<15\")", "D) =SOMA(SE(A1:A5<15))", "E) =SOMASE(A1^A5;\"<15\")"],
+            answer: "C) =SOMASE(A1:A5;\"<15\")",
+            explanation: "A função SOMASE no Excel é usada para somar células que atendem a uma condição. A condição (no caso, '<15') deve ser colocada entre aspas. [cite: 312, 313]"
+        },
+        {
+            question: "78º No MS Excel 2010, idioma português, configuração padrão existe uma função que calcula o número de células não vazias em um intervalo que corresponda a uma determinada condição. Assinale a alternativa correta que corresponda a esta função.",
+            options: ["A) CONT.SE", "B) CONT.NÚM", "C) CONT.SES", "D) CONT.VALORES", "E) CONTAR.VAZIO"],
+            answer: "A) CONT.SE",
+            explanation: "A função CONT.SE (COUNTIF em inglês) no Excel calcula o número de células em um intervalo que atendem a uma determinada condição. [cite: 313, 314]"
+        },
+        {
+            question: "79º Alessandro precisa montar um relatório no MS Excel 2010, idioma português, configuração padrão, que some o intervalo de células de A1 até A5, somente os valores maiores do que vinte. Assinale a alternativa correta que representa a fórmula que Alessandro irá utilizar.",
+            options: ["A) =SOMASE(A1:A5;>20)", "B) =SE(A1:A5>20;SOMA())", "C) =SOMASE(A1:A5;\">20\")", "D) =SOMA(SE(A1:A5>20))", "E) =SOMASE(A1^A5;\">20\")"],
+            answer: "C) =SOMASE(A1:A5;\">20\")",
+            explanation: "Similar à questão 77, a função SOMASE é usada. A condição '>20' deve ser colocada entre aspas duplas. [cite: 314, 315]"
+        },
+        {
+            question: "80º No MS Excel 2010, idioma português, configuração padrão existe uma função que retorna a média (aritmética) dos respectivos argumentos. Assinale a alternativa correta que corresponda a esta função.",
+            options: ["A) MÉDIA.SE", "B) MÉDIA", "C) MÉDIAS", "D) MÉDIA.VALORES", "E) MÉDIA.GEOMÉTRICA"],
+            answer: "B) MÉDIA",
+            explanation: "A função MÉDIA (AVERAGE em inglês) no Excel retorna a média aritmética de um conjunto de números. [cite: 315]"
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let correctAnswers = 0;
+    let incorrectAnswers = 0;
+
+    // Inicia a música de fundo
+    const backgroundMusic = document.getElementById('background-music');
+    // Ensure the music starts only after user interaction or if it's muted
+    backgroundMusic.volume = 0.2; // Define o volume da música de fundo
+    backgroundMusic.muted = true; // Mute initially to allow autoplay
+    document.addEventListener('click', () => {
+        if (backgroundMusic.muted) {
+            backgroundMusic.muted = false; // Unmute on first click
+            backgroundMusic.play();
+        }
+    }, { once: true }); // Run this listener only once
+
+    function loadQuestion() {
+        const questionContainer = document.getElementById('quiz');
+        if (currentQuestionIndex < questions.length) {
+            questionContainer.innerHTML = `
+                <div class="question">${questions[currentQuestionIndex].question}</div>
+                <ul class="options">
+                    ${questions[currentQuestionIndex].options.map(option => `<li><label><input type="radio" name="option" value="${option}"> ${option}</label></li>`).join('')}
+                </ul>
+                <img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/137618553/UOzw3SRAqth4L2FY.png?Expires=1749420661&Signature=nKlhvsi96vjyIsSahFtLjvZgHb6sYonjMeqA6RIim4irvSxqrAk9cW0OPkStrRKHWJZfYhImUgTmjL2EmMYRvH7w~uOUTqqBO5XVTnv0c-ZD2dSjEeKDE8RRvsT2znxfbrkJtceXyCn9xHWH-uA7qwFsyF4Z7FVDMR4ibVwOwJtyrOjkieWUeU1h-VI6m2p3o0iugTbMV~kMXOaX2W~KhEG0hPJLQ10BpMTW01DnPPXwy2oXAIXxgYDOZJ3qfTIYLqmceNBtOBJ3HcjHU8dQrPdFjUFKNbcOsFSEKEI8-IRKhwzJsrwecuc2KL8QMNSO0n7g3M2JFg-ujHiHEbaUeBA__&Key-Pair-Id=K3USGZIKWMDCSX" alt="Logo" class="logo">
+            `;
+            document.getElementById('next-button').style.display = 'block'; // Ensure button is visible for next question
+        } else {
+            showResults();
+        }
+    }
+
+    document.getElementById('next-button').addEventListener('click', () => {
+        const selectedOption = document.querySelector('input[name="option"]:checked');
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[currentQuestionIndex].answer) {
+                correctAnswers++;
+                alert('Correto!');
+            } else {
+                incorrectAnswers++;
+                document.getElementById('error-sound').play(); // Toca o som de erro
+                alert('Incorreto! A resposta correta é: ' + questions[currentQuestionIndex].answer);
+            }
+            currentQuestionIndex++;
+            loadQuestion(); // Load next question or show results
+        } else {
+            alert('Por favor, selecione uma opção.');
+        }
+    });
+
+    function showResults() {
+        const totalQuestions = questions.length;
+        const percentageCorrect = (correctAnswers / totalQuestions) * 100;
+        const percentageIncorrect = (incorrectAnswers / totalQuestions) * 100;
+
+        const resultContainer = document.getElementById('quiz-container');
+        document.getElementById('next-button').style.display = 'none'; // Hide next button
+
+        let gabaritoHtml = questions.map((q, index) => `
+            <div class="gabarito-item">
+                <strong>${index + 1}ª Questão:</strong> ${q.question}<br>
+                <strong>Resposta Correta:</strong> ${q.answer}<br>
+                <span>${q.explanation}</span>
+            </div>
+        `).join('');
+
+        resultContainer.innerHTML = `
+            <h2>Quiz Concluído!</h2>
+            <p>Acertos: ${correctAnswers} (${percentageCorrect.toFixed(2)}%)</p>
+            <p>Erros: ${incorrectAnswers} (${percentageIncorrect.toFixed(2)}%)</p>
+            <p>${getImprovementSuggestion(percentageCorrect)}</p>
+            <h3>Gabarito Completo:</h3>
+            <div class="gabarito-list">
+                ${gabaritoHtml}
+            </div>
+            <img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/137618553/UOzw3SRAqth4L2FY.png?Expires=1749420661&Signature=nKlhvsi96vjyIsSahFtLjvZgHb6sYonjMeqA6RIim4irvSxqrAk9cW0OPkStrRKHWJZfYhImUgTmjL2EmMYRvH7w~uOUTqqBO5XVTnv0c-ZD2dSjEeKDE8RRvsT2znxfbrkJtceXyCn9xHWH-uA7qwFsyF4Z7FVDMR4ibVwOwJtyrOjkieWUeU1h-VI6m2p3o0iugTbMV~kMXOaX2W~KhEG0hPJLQ10BpMTW01DnPPXwy2oXAIXxgYDOZJ3qfTIYLqmceNBtOBJ3HcjHU8dQrPdFjUFKNbcOsFSEKEI8-IRKhwzJsrwecuc2KL8QMNSO0n7g3M2JFg-ujHiHEbaUeBA__&Key-Pair-Id=K3USGZIKWMDCSX" alt="Logo" class="logo">
+        `;
+    }
+
+    function getImprovementSuggestion(percentageCorrect) {
+        if (percentageCorrect === 100) {
+            return "Parabéns! Excelente desempenho em Informática Geral!";
+        } else if (percentageCorrect >= 70) {
+            return "Muito bom! Continue revisando os tópicos para aprimorar ainda mais.";
+        } else if (percentageCorrect >= 40) {
+            return "Bom trabalho! Você pode melhorar revisando os conceitos de Informática Geral.";
+        } else {
+            return "Continue estudando! Dedique mais tempo aos conceitos de Informática Geral.";
+        }
+    }
+
+    loadQuestion();
+</script>
+</body>
+</html>
